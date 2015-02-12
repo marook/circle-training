@@ -1,0 +1,19 @@
+circle-training - trains a neuronal net to draw a circle
+
+1) Requirements
+2) Usage
+
+
+------------------------------------------------------------------------
+Requirements
+
+Yo need pybrain (http://pybrain.org/).
+
+
+------------------------------------------------------------------------
+Usage
+
+$ python circle-training.py
+
+It will generate a set of activation_*.png images in the current working
+directory.
