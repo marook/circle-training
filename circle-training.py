@@ -1,16 +1,46 @@
 #!/usr/bin/python2
 
 import PIL
-from pybrain import structure
+from pybrain import datasets, structure
+from pybrain.supervised import trainers
 from pybrain.tools import shortcuts
+import random
 
-MAX_EPOCHS = 1
+MAX_TURNS = 1000
+MAX_EPOCHS = 100
 
 def main():
     net = shortcuts.buildNetwork(2, 3, 1, hiddenclass=structure.TanhLayer, bias=False)
 
-    for epoch in xrange(MAX_EPOCHS):
-        write_net_to_image('activation_%s.png' % (epoch, ), net)
+    for turn in xrange(MAX_TURNS):
+        print 'Running turn %s...' % (turn, )
+        
+        write_net_to_image('activation_%03d.png' % (turn, ), net)
+
+        ds = generate_tranining_ds()
+        trainer = trainers.BackpropTrainer(net, ds)
+
+        for epoch in xrange(MAX_EPOCHS):
+            mse = trainer.train()
+
+        print 'Last MSE %s' % (mse, )
+
+def generate_tranining_ds(sample_count=100): 
+    ds = datasets.SupervisedDataSet(2, 1)
+
+    for i in xrange(sample_count):
+        x = random.uniform(-1, 1)
+        y = random.uniform(-1, 1)
+
+        net_in = (x, y)
+
+        r2 = x*x + y*y
+
+        expected_activation = (1.0, ) if r2 <= 1*1 else (-1.0, )
+
+        ds.appendLinked(net_in, expected_activation)
+
+    return ds
 
 def write_net_to_image(image_path, net, image_size=(100, 100)):
     width, height = image_size
