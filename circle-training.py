@@ -13,12 +13,14 @@ def main():
         write_net_to_image('activation_%s.png' % (epoch, ), net)
 
 def write_net_to_image(image_path, net, image_size=(100, 100)):
+    width, height = image_size
+    
     img = PIL.Image.new('L', image_size)
     pixels = img.load()
 
-    for y in xrange(image_size[1]):
-        for x in xrange(image_size[0]):
-            net_out = net.activate((x, y))
+    for y in xrange(height):
+        for x in xrange(width):
+            net_out = net.activate((x / float(width) * 2.0 - 1.0, y / float(height) * 2.0 - 1.0))
 
             pixels[x, y] = net_out_to_pixel(net_out[0])
 
